@@ -60,10 +60,9 @@
 ### 2. 软件配置
 
 - **Wi-Fi连接**  
-  修改 `iot_cloud_oc.c` 文件中的Wi-Fi配置参数：
-
-  #define WIFI_SSID "你的WiFi名称"
-  #define WIFI_PASS "你的WiFi密码"
+  修改 `iot_cloud_oc.c` 文件中的Wi-Fi配置参数：<br>
+  #define WIFI_SSID "你的WiFi名称"<br>
+  #define WIFI_PASS "你的WiFi密码"<br>
 
 ## 运行与观察
 
