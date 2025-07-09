@@ -81,10 +81,10 @@
   - 心率变异性（HRV）及心理情绪状态
 
 - 示例输出：
-[$GNGGA,WGS-84]经纬度数据 : 23.00000, 113.00000
-SENSOR:lum:130.56 temp:26.48 hum:51.90
-SENSOR:Heart_rate: 76
-SO2: 98
+[$GNGGA,WGS-84]经纬度数据 : 23.00000, 113.00000<br>
+SENSOR:lum:130.56 temp:26.48 hum:51.90<br>
+SENSOR:Heart_rate: 76<br>
+SO2: 98<br>
 
 
 ### 3. 数据上传与云端监控
