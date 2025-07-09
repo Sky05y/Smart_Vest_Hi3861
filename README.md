@@ -18,13 +18,13 @@
        - 命令下发（控制LED灯和电机）
 
 ##  目录结构说明
-├── gps.c # GPS 串口读取 + 定位功能
-├── iot_cloud_oc.c # 主入口，IoT 任务、MQTT通信、数据上报处理
-├── max30102_app.c # 心率和血氧数据采集与分析
-├── E53_IA1.c/h # 环境传感器模块（温度、湿度）
-├── wifi_connect.c/h # WiFi 连接配置
-├── oc_mqtt.c/h # MQTT通信接口
-├── BUILD.gn / makefile # 编译构建脚本
+├── gps.c # GPS 串口读取 + 定位功能<br>
+├── iot_cloud_oc.c # 主入口，IoT 任务、MQTT通信、数据上报处理<br>
+├── max30102_app.c # 心率和血氧数据采集与分析<br>
+├── E53_IA1.c/h # 环境传感器模块（温度、湿度）<br>
+├── wifi_connect.c/h # WiFi 连接配置<br>
+├── oc_mqtt.c/h # MQTT通信接口<br>
+├── BUILD.gn / makefile # 编译构建脚本<br>
 
 
 ---
