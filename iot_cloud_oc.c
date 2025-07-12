@@ -20,6 +20,7 @@
 #include "oc_mqtt.h"
 #include <cJSON.h>
 #include "max30205.h"
+#include "hi_task.h"
 
 #define MSGQUEUE_OBJECTS 16
 
@@ -350,6 +351,44 @@ void InitIO2(void)
     hi_gpio_init();  // 初始化 GPIO 模块
     hi_gpio_set_dir(IO2_GPIO_NAME, HI_GPIO_DIR_OUT);  // 设置为输出模式
 }
+static int fall_status = 0;
+static void F1_Pressed(char *arg)
+{
+    (void)arg;
+    if (fall_status == 1) return;  // 已经是摔倒状态，直接返回
+    fall_status = 1;
+    GpioSetOutputVal(WIFI_IOT_IO_NAME_GPIO_2, 1);
+    //在这里写入F1被按下之后执行的操作(上传到华为云，已摔倒)
+    printf("有人摔倒了\n");
+    hi_sleep(300);
+}
+static void F2_Pressed(char *arg)
+{
+    (void)arg;
+    if (fall_status == 0) return;  // 已经是站立状态，直接返回
+    fall_status = 0;
+    GpioSetOutputVal(WIFI_IOT_IO_NAME_GPIO_2, 0);
+    //在这里写入F1被按下之后执行的操作(上传到华为云，取消已摔倒)
+    printf("站起来了\n");
+    hi_sleep(300);
+}
+static void Button(void)
+{
+    GpioInit();
+    //初始化LED灯
+    IoSetFunc(WIFI_IOT_IO_NAME_GPIO_2, WIFI_IOT_IO_FUNC_GPIO_2_GPIO);
+    GpioSetDir(WIFI_IOT_IO_NAME_GPIO_2, WIFI_IOT_GPIO_DIR_OUT);
+    //初始化F1按键，设置为下降沿触发中断
+    IoSetFunc(WIFI_IOT_IO_NAME_GPIO_11, WIFI_IOT_IO_FUNC_GPIO_11_GPIO);
+    GpioSetDir(WIFI_IOT_IO_NAME_GPIO_11, WIFI_IOT_GPIO_DIR_IN);
+    IoSetPull(WIFI_IOT_IO_NAME_GPIO_11, WIFI_IOT_IO_PULL_UP);
+    GpioRegisterIsrFunc(WIFI_IOT_IO_NAME_GPIO_11, WIFI_IOT_INT_TYPE_EDGE, WIFI_IOT_GPIO_EDGE_FALL_LEVEL_LOW, F1_Pressed, NULL);
+    //初始化F2按键，设置为下降沿触发中断
+    IoSetFunc(WIFI_IOT_IO_NAME_GPIO_12, WIFI_IOT_IO_FUNC_GPIO_12_GPIO);
+    GpioSetDir(WIFI_IOT_IO_NAME_GPIO_12, WIFI_IOT_GPIO_DIR_IN);
+    IoSetPull(WIFI_IOT_IO_NAME_GPIO_12, WIFI_IOT_IO_PULL_UP);
+    GpioRegisterIsrFunc(WIFI_IOT_IO_NAME_GPIO_12, WIFI_IOT_INT_TYPE_EDGE, WIFI_IOT_GPIO_EDGE_FALL_LEVEL_LOW, F2_Pressed, NULL);
+}
 
 /***********************************************************************
 * 函数名称: task_sensor_entry
@@ -361,12 +400,13 @@ static int task_sensor_entry(void)
 {
     app_msg_t *app_msg;
     double lat = 0.0, lon = 0.0;  // 存储GPS经纬度
+    float temperature = 0.0;
     max30205_init(); // 初始化温度传感器
     max30102_app_entry();
     printf("初始化完成\n");
     UartExampleEntry();
     printf("初始化定位成功\n");
-    float temperature = 0.0;
+    Button();
     while (1)
     {
         // E53_IA1_Read_Data(&data);
