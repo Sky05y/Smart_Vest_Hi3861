@@ -368,22 +368,23 @@ void InitIO2(void)
 static int task_sensor_entry(void)
 {
     app_msg_t *app_msg;
-    E53_IA1_Data_TypeDef data;
     double lat = 0.0, lon = 0.0;  // 存储GPS经纬度
-    E53_IA1_Init();
+    max30205_init(); // 初始化温度传感器
     max30102_app_entry();
     printf("初始化完成\n");
     UartExampleEntry();
     printf("初始化定位成功\n");
+    float temperature = 0.0;
     while (1)
     {
-        E53_IA1_Read_Data(&data);
+        // E53_IA1_Read_Data(&data);
+        temperature = max30205_read_template();
         RunGPS(&lat, &lon);
         app_msg = malloc(sizeof(app_msg_t));
         cir_hs();
-        printf("SENSOR:lum:%.2f temp:%.2f hum:%.2f lat=%.6f, lon=%.6f \r\n", data.Lux, data.Temperature, data.Humidity, lat, lon);
+        printf("temperature:%.2f \r\n", temperature);
         printf("SENSOR:Heart_rate: %d\nSO2: %d\r\n",g_heart_rate,g_spo2);
-        if (data.Temperature > 31.0 || g_heart_rate > 99) {
+        if (temperature > 29.0 || g_heart_rate > 99) {
             hi_io_set_func(HI_IO_NAME_GPIO_2, HI_IO_FUNC_GPIO_1_GPIO);
             hi_gpio_set_dir(HI_GPIO_IDX_2, HI_GPIO_DIR_OUT);               
             hi_gpio_set_ouput_val(HI_GPIO_IDX_2, HI_GPIO_VALUE1);       
@@ -395,9 +396,7 @@ static int task_sensor_entry(void)
         if (NULL != app_msg)
         {
             app_msg->msg_type = en_msg_report;
-            app_msg->msg.report.hum = (int)data.Humidity;
-            app_msg->msg.report.lum = (int)data.Lux;
-            app_msg->msg.report.temp = (int)data.Temperature;
+            app_msg->msg.report.temp = (float)temperature;
             app_msg->msg.report.heart_rate = g_heart_rate;
             app_msg->msg.report.spo2 = g_spo2;
             app_msg->msg.report.lat = lat;

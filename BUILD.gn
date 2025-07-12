@@ -5,9 +5,11 @@ static_library("Tempandblood2") {
         "src/oc_mqtt.c",
         "src/oc_mqtt_profile_package.c",
         "src/E53_IA1.c",
-        "max30102_app.c",
-        "max30102_driver.c",
-        "gps.c"
+        "src/max30205.c",
+        "src/max30102_driver.c",
+        "src/gps.c",
+        "src/max30102_app.c",
+        "src/max30205_example.c"，
     ]
     
     cflags = [ "-Wno-unused-variable" ]
