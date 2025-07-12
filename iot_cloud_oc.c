@@ -15,11 +15,11 @@
 #include "lwip/sockets.h"
 #include "hi_gpio.h"
 #include "gps.h"
-#include "E53_IA1.h"
 #include "max30102_app.h"
 #include "hi_io.h"
 #include "oc_mqtt.h"
 #include <cJSON.h>
+#include "max30205.h"
 
 #define MSGQUEUE_OBJECTS 16
 
@@ -254,14 +254,10 @@ static void deal_cmd_msg(cmd_t *cmd)
         if (0 == strcmp(cJSON_GetStringValue(obj_para), "ON"))
         {
             g_app_cb.led = 1;
-            Light_StatusSet(ON);
-            printf("Light On!");
         }
         else
         {
             g_app_cb.led = 0;
-            Light_StatusSet(OFF);
-            printf("Light Off!");
         }
         cmdret = 0;
     }
@@ -281,14 +277,10 @@ static void deal_cmd_msg(cmd_t *cmd)
         if (0 == strcmp(cJSON_GetStringValue(obj_para), "ON"))
         {
             g_app_cb.motor = 1;
-            Motor_StatusSet(ON);
-            printf("Motor On!");
         }
         else
         {
             g_app_cb.motor = 0;
-            Motor_StatusSet(OFF);
-            printf("Motor Off!");
         }
         cmdret = 0;
     }
@@ -317,7 +309,7 @@ static int task_main_entry(void)
 {
     app_msg_t *app_msg;
 
-    uint32_t ret = WifiConnect("1000后", "12345678");   //需要设置连接WIFI
+    uint32_t ret = WifiConnect("harmony", "harmony@11");   //需要设置连接WIFI
 
     device_info_init(CLIENT_ID, USERNAME, PASSWORD);    //配置设备信息
     oc_mqtt_init(); //初始化oc_mqtt

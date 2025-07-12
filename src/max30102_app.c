@@ -287,7 +287,7 @@ int cir_hs(void)
             }
             int avg_interval = total / valid;
             g_heart_rate = (60 * 1000) / (avg_interval * SAMPLE_INTERVAL_MS);
-            update_heart_status(avg_interval, 0, 0, 1);
+            // update_heart_status(avg_interval, 0, 0, 1);
         }
     }
     buffer_index = (buffer_index + 1) % SAMPLE_NUM;
